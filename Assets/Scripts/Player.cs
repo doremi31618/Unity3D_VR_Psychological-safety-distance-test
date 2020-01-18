@@ -3,9 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-    public GameObject ComingPersonModel;
+    //public GameObject ComingPersonModel;
+    public GameObject PerspectiveCamera;
     GameObject _ComingPersonModelClone;
     GameObject gameManager;
+    public GameObject PlayerCamera;
+    public Vector3 SetPosition
+    {
+        set
+        {
+                transform.position = value;
+
+        }
+    }
+
+    public Vector3 SetRotation
+    {
+        set
+        {
+            transform.eulerAngles = value;
+            PerspectiveCamera.transform.rotation = transform.rotation;
+        }
+    }
 
     [HideInInspector]
     public bool isTouchComingPerson = false;
@@ -16,36 +35,8 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        MouseDragToMove();
+        //MouseDragToMove();
 	}
-    void MouseDragToMove()
-    {
-        if(Input.GetMouseButton(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit = new RaycastHit();
-            //&& hit.collider.gameObject.tag == "Player"
-            if(Physics.Raycast(ray,out hit) )
-            {
-                Debug.DrawLine(ray.origin, hit.point, Color.red);
-
-                if(hit.collider.gameObject.tag == "Player")
-                    this.transform.position = new Vector3(hit.point.x,transform.parent.position.y + 1f,hit.point.z);
-
-                if (hit.collider.gameObject.tag == "ComingPerson" && Input.GetMouseButtonDown(0))
-                {
-                    Debug.Log("Pressed Coming Person");
-                    isTouchComingPerson = true;
-
-                    gameManager.GetComponent<GameManager>().RemoveAllComingPerson();
-
-                    _ComingPersonModelClone = Instantiate(ComingPersonModel, hit.collider.gameObject.transform.position,hit.collider.transform.rotation);
-                    _ComingPersonModelClone.transform.parent = this.transform.parent;
-                }
-            }
-        }
-    }
 
 
 }
